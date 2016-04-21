@@ -14,7 +14,7 @@ setup(
 
     description='A Suite for files finding',
     long_description=long_description,
-    url='https://github.com/fengyu05/azkaban_ctrl/wiki',
+    url='https://github.com/fengyu05/ff/wiki',
     author='Zhifeng Deng',
     author_email='eitheror2013@gmail.com',
 
@@ -48,7 +48,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='azkaban cli',
+    keywords='ff suites',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
@@ -85,7 +85,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
       'console_scripts' : [
-        'az_ctrl=azkaban_ctrl:main'
+        'ff_ctrl=ff_ctrl:main'
       ],
     },
 )
