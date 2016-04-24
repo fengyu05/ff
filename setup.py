@@ -9,10 +9,10 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='ff_suite',
-    version='0.0.1',
+    name='ff',
+    version='0.0.10',
 
-    description='A Suite for files finding',
+    description='A kit for files finding',
     long_description=long_description,
     url='https://github.com/fengyu05/ff/wiki',
     author='Zhifeng Deng',
@@ -48,7 +48,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='ff suites',
+    keywords='ff kit',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
@@ -85,7 +85,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
       'console_scripts' : [
-        'ff_ctrl=ff_ctrl:main'
+        'ff_ctrl=ff:main'
       ],
     },
 )

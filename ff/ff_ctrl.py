@@ -3,15 +3,17 @@
 ff control
 """
 import os, time, re
-__version__ = 0.1
+__version__ = 0.2
 
 options = {}
 
 HOME_PATH = os.environ["HOME"]
-BASHRC_PATH = HOME_PATH + '/.bashrc'
+#BASHRC_PATH = HOME_PATH + '/.bashrc'
+BASHRC_PATH = HOME_PATH + '/.bash_profile'
 FFRC_PATH = HOME_PATH + '/.ffrc'
 
 ACTION_INSTALL = 'install'
+ACTION_VIM_SETUP = 'vimsetup'
 ACTION_HELP = 'help'
 
 def printHelp():
@@ -23,21 +25,22 @@ def printHelp():
 
 def install():
   print 'Installing ff script...'
-  print 'Dry run:' + str(options.dryrun)
+  #print 'Dry run:' + str(options.dryrun)
 
   bashrcExist = os.path.exists(BASHRC_PATH)
   ffrcExist = os.path.exists(FFRC_PATH)
-  if bashrcExist:
-    if ffrcExist:
-      print '~/.ffrc already exist. Overriding...'
-      createFFRC()
-      appendFFRC2bash()
-    else:
-      print 'Creating ~/.ffrc'
-      createFFRC()
-      appendFFRC2bash()
+  if not bashrcExist:
+    print 'Bash profile does not exsit, creating it first...'
+    printRun('touch ' + BASHRC_PATH)
+
+  if ffrcExist:
+    print '~/.ffrc already exist. Overriding...'
+    createFFRC()
+    appendFFRC2bash()
   else:
-    print '~/.bashrc do not exsit. Please create it first'
+    print 'Creating ~/.ffrc'
+    createFFRC()
+    appendFFRC2bash()
 
 def printRun(cmd):
   print cmd
@@ -50,7 +53,7 @@ def writeContent(filePath, content):
 
 def createFFRC():
   writeContent(FFRC_PATH, FFRC_CONTENT)
-  #printRun('source ~/.bashrc')
+  printRun('. ~/.ffrc')
 
 def appendFFRC2bash():
   fd = open(BASHRC_PATH, "r")
@@ -59,16 +62,37 @@ def appendFFRC2bash():
   if hasFFRCappend:
     print 'FFRC append already exist'
   else:
-    print 'Appending FFRC to bashrc'
+    print 'Appending FFRC to bash profile'
     with open(BASHRC_PATH, "a") as myfile:
       myfile.write(FFRC_APPENDIX)
 
-def main(args):
+  print 'Setup completed, please reload bash profile.'
+
+def vimsetup():
+  pass
+
+def main():
+  from optparse import OptionParser
+  parser = OptionParser()
+  #parser.add_option('--dry', dest='dryrun', action='store_true', help='dry run')
+
+  (opts,args) = parser.parse_args()
+  global options
+  options = opts
+  print 'options:', options
+  print 'args:', args
+  print '\n\n'
+
+  if (len(args) == 0):
+    parser.print_help()
+    printHelp()
+    exit()
 
   action = args[0]
   # action that target a single app
   ALL_ACTION = {
              ACTION_INSTALL: install,
+             ACTION_VIM_SETUP : vimSetup,
              ACTION_HELP: printHelp
   }
 
@@ -84,17 +108,42 @@ FFRC_CONTENT = '''
 ############################## ZHIFENG ffrc START #####################
 # FFRC Version 0.1
 
+if [ "$(uname)" = Darwin ]; then
+  export __FF_OS_TYPE=MACOS
+else
+  export __FF_OS_TYPE=LINUX
+fi
+
 # Function key binding
-bind '"\eOP":"vim $F1\n"'
-bind '"\eOQ":"vim $F2\n"'
-bind '"\eOR":"vim $F3\n"'
-bind '"\eOS":"vim $F4\n"'
-bind '"\e[15~":"vim $F5\n"'
-bind '"\e[17~":"vim $F6\n"'
-bind '"\e[18~":"vim $F7\n"'
-bind '"\e[19~":"vim $F8\n"'
-bind '"\e[20~":"vim $F9\n"'
-bind '"\e[21~":"vim $F10\n"'
+if [ -z "$__FF__BIND_FUNC_KEY" ]; then
+  echo
+else
+  if [ $__FF_OS_TYPE == MACOS ]; then
+    bind '"\eOP":"vim $F1\015"'
+    bind '"\eOQ":"vim $F2\015"'
+    bind '"\eOR":"vim $F3\015"'
+    bind '"\eOS":"vim $F4\015"'
+    bind '"\e[15~":"vim $F5\015"'
+    bind '"\e[17~":"vim $F6\015"'
+    bind '"\e[18~":"vim $F7\015"'
+    bind '"\e[19~":"vim $F8\015n"'
+    bind '"\e[20~":"vim $F9\015"'
+    bind '"\e[21~":"vim $F10\015"'
+    __FF__BIND_FUNC_KEY=1
+  else
+    bind '"\eOP":"vim $F1\n"'
+    bind '"\eOQ":"vim $F2\n"'
+    bind '"\eOR":"vim $F3\n"'
+    bind '"\eOS":"vim $F4\n"'
+    bind '"\e[15~":"vim $F5\n"'
+    bind '"\e[17~":"vim $F6\n"'
+    bind '"\e[18~":"vim $F7\n"'
+    bind '"\e[19~":"vim $F8\n"'
+    bind '"\e[20~":"vim $F9\n"'
+    bind '"\e[21~":"vim $F10\n"'
+    __FF__BIND_FUNC_KEY=1
+  fi
+fi
 
 # Quick alias
 alias rf1='load_file $F1'
@@ -145,10 +194,6 @@ _mapff() {
 }
 
 _ff() {
-  if [ $# -lt 1 ] ; then
-    echo "usage: ff filepattern"
-    return
-  fi
 # \* escaping the asterisk avoid shell expanding
   find . -name \*"$1"\* -o -type d \( -path "*/build" -o -path "*/.svn" -o -path "*/zip" -o -path "*/.git" \) -prune | egrep -v "./build|.git|.svn|./zip"
 }
@@ -229,18 +274,4 @@ fi
 '''
 
 if __name__ == '__main__':
-  from optparse import OptionParser
-  parser = OptionParser()
-  parser.add_option('--dry', dest='dryrun', action='store_true', help='dry run')
-
-  (options,args) = parser.parse_args()
-  print 'options:', options
-  print 'args:', args
-  print '\n\n'
-
-  if (len(args) == 0):
-    parser.print_help()
-    printHelp()
-    exit()
-
-  main(args)
+  main()
