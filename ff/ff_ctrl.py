@@ -27,7 +27,6 @@ def printHelp():
 
 def install():
   print 'Installing ff script...'
-  #print 'Dry run:' + str(options.dryrun)
 
   bashrcExist = os.path.exists(BASHRC_PATH)
   ffrcExist = os.path.exists(FFRC_PATH)
@@ -35,14 +34,13 @@ def install():
     print 'Bash profile does not exsit, creating it first...'
     printRun('touch ' + BASHRC_PATH)
 
-  if ffrcExist:
-    print '~/.ffrc already exist. Overriding...'
-    createFFRC()
-    appendFFRC2bash()
+  if options.withUtt:
+    writeContent(FFRC_PATH, FFRC_CONTENT + FF_UTT_CONTENT)
   else:
-    print 'Creating ~/.ffrc'
-    createFFRC()
-    appendFFRC2bash()
+    writeContent(FFRC_PATH, FFRC_CONTENT)
+
+  printRun('. ~/.ffrc')
+  appendFFRC2bash()
 
 def printRun(cmd):
   print cmd
@@ -52,10 +50,6 @@ def writeContent(filePath, content):
   fd = open(filePath, "w");
   fd.write(content)
   fd.close()
-
-def createFFRC():
-  writeContent(FFRC_PATH, FFRC_CONTENT)
-  printRun('. ~/.ffrc')
 
 def appendFFRC2bash():
   fd = open(BASHRC_PATH, "r")
@@ -77,7 +71,7 @@ def vimSetup():
 def main():
   from optparse import OptionParser
   parser = OptionParser()
-  #parser.add_option('--dry', dest='dryrun', action='store_true', help='dry run')
+  parser.add_option('--withUtt', dest='withUtt', action='store_true', help='with utt function')
 
   (opts,args) = parser.parse_args()
   global options
