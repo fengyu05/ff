@@ -164,6 +164,9 @@ load_file() {
 
 function rebash() {
   source ~/.bashrc
+  if [ -f ~/.ffrc ]; then
+    source ~/.ffrc
+  fi
 }
 
 function bashrc() {
@@ -173,6 +176,27 @@ function bashrc() {
 function vimrc() {
   vim ~/.vimrc
 }
+
+# Alias command
+alias ll='ls -alF'
+alias wp='cd ~/workspace'
+alias vimr='vim -R'
+alias kill_fg='kill -9 $(jobs -p)'
+alias listjar="ls *.jar | xargs -Ifn sh -c 'echo fn;jar tf fn'"
+alias pip_upload='python setup.py sdist bdist_wheel upload'
+
+# Git utt
+alias git_push_origin='git push -u origin master'
+alias git_pull_rebase='git pull --rebase'
+alias git_commit_amend='git commit --amend'
+alias git_checkout_origin='git checkout origin/master'
+alias git_list_unpushed='git log origin/master..HEAD --name-only'
+alias git_info='git remote show origin'
+function git_list_edit() {
+  _mapff `git status | grep -E 'new file:|modified:' | cut -d ':' -f 2`
+}
+# Svn utt
+
 ############################## ZHIFENG ffrc END #####################
 '''
 
@@ -507,22 +531,6 @@ endfunction
 '''
 
 FF_UTT_CONTENT = '''
-############################## ZHIFENG ff utt START #####################
-# Git utt
-alias git_push_origin='git push -u origin master'
-alias git_pull_rebase='git pull --rebase'
-alias git_commit_amend='git commit --amend'
-alias git_checkout_origin='git checkout origin/master'
-alias git_list_unpushed='git log origin/master..HEAD --name-only'
-alias git_info='git remote show origin'
-
-function git_list_edit() {
-  _mapff `git status | grep -E 'new file:|modified:' | cut -d ':' -f 2`
-}
-
-# Svn utt
-
-############################## ZHIFENG ffrc END #####################
 '''
 
 

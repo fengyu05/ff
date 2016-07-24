@@ -10,7 +10,7 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 
 setup(
     name='ff',
-    version='0.0.10',
+    version='0.0.11',
 
     description='A kit for files finding',
     long_description=long_description,
