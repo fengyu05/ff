@@ -160,6 +160,19 @@ load_file() {
     vim -c ":qa" $1
   fi
 }
+
+
+function rebash() {
+  source ~/.bashrc
+}
+
+function bashrc() {
+  vim ~/.bashrc
+}
+
+function vimrc() {
+  vim ~/.vimrc
+}
 ############################## ZHIFENG ffrc END #####################
 '''
 
