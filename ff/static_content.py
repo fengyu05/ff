@@ -177,9 +177,16 @@ function vimrc() {
   vim ~/.vimrc
 }
 
+function wp() {
+  if [ $# -lt 1 ]; then
+    cd ~/workspace
+  else
+    cd ~/workspace/$1
+  fi
+}
+
 # Alias command
 alias ll='ls -alF'
-alias wp='cd ~/workspace'
 alias vimr='vim -R'
 alias kill_fg='kill -9 $(jobs -p)'
 alias listjar="ls *.jar | xargs -Ifn sh -c 'echo fn;jar tf fn'"
@@ -196,6 +203,13 @@ function git_list_edit() {
   _mapff `git status | grep -E 'new file:|modified:' | cut -d ':' -f 2`
 }
 # Svn utt
+
+# Common use tools
+if [ $__FF_OS_TYPE == MACOS ]; then
+  alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
+else
+  alias chrome='/usr/bin/google-chrome'
+fi
 
 ############################## ZHIFENG ffrc END #####################
 '''
